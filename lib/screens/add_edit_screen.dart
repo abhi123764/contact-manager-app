@@ -32,16 +32,22 @@ class _AddEditScreenState extends State<AddEditScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final provider = context.read<ContactProvider>();
+  void dispose() {
+    name.dispose();
+    phone.dispose();
+    email.dispose();
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.contact == null ? "Add Contact" : "Edit Contact"),
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.brightness_6),
+            icon: const Icon(Icons.brightness_6),
             onPressed: () {
               context.read<ThemeProvider>().toggleTheme();
             },
@@ -49,7 +55,7 @@ class _AddEditScreenState extends State<AddEditScreen> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
           child: Column(
@@ -58,7 +64,7 @@ class _AddEditScreenState extends State<AddEditScreen> {
                 controller: name,
                 decoration: InputDecoration(
                   labelText: "Name",
-                  prefixIcon: Icon(Icons.person),
+                  prefixIcon: const Icon(Icons.person),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -73,13 +79,15 @@ class _AddEditScreenState extends State<AddEditScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 15),
+
+              const SizedBox(height: 15),
+
               TextFormField(
                 controller: phone,
                 keyboardType: TextInputType.phone,
                 decoration: InputDecoration(
                   labelText: "Phone",
-                  prefixIcon: Icon(Icons.phone),
+                  prefixIcon: const Icon(Icons.phone),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -94,13 +102,15 @@ class _AddEditScreenState extends State<AddEditScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 15),
+
+              const SizedBox(height: 15),
+
               TextFormField(
                 controller: email,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   labelText: "Email",
-                  prefixIcon: Icon(Icons.email),
+                  prefixIcon: const Icon(Icons.email),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -117,38 +127,57 @@ class _AddEditScreenState extends State<AddEditScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 25),
+
+              const SizedBox(height: 25),
+
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 50),
+                  minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
+                    final provider = context.read<ContactProvider>();
+
+                    final newContact = Contact(
+                      id: widget.contact?.id,
+                      name: name.text,
+                      phone: phone.text,
+                      email: email.text,
+                    );
+
+                    final messenger = ScaffoldMessenger.of(context);
+                    final navigator = Navigator.of(context);
+
                     if (widget.contact == null) {
-                      provider.addContact(
-                        Contact(
-                          name: name.text.trim(),
-                          phone: phone.text.trim(),
-                          email: email.text.trim(),
-                        ),
-                      );
+                      await provider.addContact(newContact);
                     } else {
-                      provider.updateContact(
-                        Contact(
-                          id: widget.contact!.id,
-                          name: name.text.trim(),
-                          phone: phone.text.trim(),
-                          email: email.text.trim(),
-                        ),
-                      );
+                      await provider.updateContact(newContact);
                     }
-                    Navigator.pop(context);
+
+                    if (!mounted) return;
+
+                    messenger.showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          textAlign: TextAlign.center,
+                          widget.contact == null
+                              ? "Contact Added Successfully"
+                              : "Contact Updated Successfully",
+                        ),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+
+                    navigator.pop();
                   }
                 },
-                child: Text("Save Contact", style: TextStyle(fontSize: 16)),
+                child: const Text(
+                  "Save Contact",
+                  style: TextStyle(fontSize: 16),
+                ),
               ),
             ],
           ),
