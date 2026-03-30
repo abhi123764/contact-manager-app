@@ -1,3 +1,4 @@
+import 'package:contact_app/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/contact.dart';
@@ -38,6 +39,14 @@ class _AddEditScreenState extends State<AddEditScreen> {
       appBar: AppBar(
         title: Text(widget.contact == null ? "Add Contact" : "Edit Contact"),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.brightness_6),
+            onPressed: () {
+              context.read<ThemeProvider>().toggleTheme();
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),
