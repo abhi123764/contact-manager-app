@@ -25,7 +25,7 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       body: provider.contacts.isEmpty
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: Text('No Contact Found'))
           : ListView.builder(
               itemCount: provider.contacts.length,
               itemBuilder: (context, index) {
@@ -35,10 +35,10 @@ class HomeScreen extends StatelessWidget {
                   margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   child: ListTile(
                     leading: CircleAvatar(child: Text(c.name[0])),
-                    title: Text(c.name,),
+                    title: Text(c.name),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [Text(c.phone), Text(c.email)],
+                      children: [Text(c.phone), Text(c.email), Text(c.nick)],
                     ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -55,9 +55,20 @@ class HomeScreen extends StatelessWidget {
                           },
                         ),
                         IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () {
-                            provider.deleteContact(c.id!);
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () async {
+                            final provider = context.read<ContactProvider>();
+
+                            final messenger = ScaffoldMessenger.of(context);
+
+                            await provider.deleteContact(c.id!);
+
+                            messenger.showSnackBar(
+                              SnackBar(
+                                content: Text("Contact Deleted"),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
                           },
                         ),
                       ],

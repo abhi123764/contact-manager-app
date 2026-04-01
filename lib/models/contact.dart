@@ -3,21 +3,18 @@ class Contact {
   String name;
   String phone;
   String email;
+  String nick;
 
   Contact({
     this.id,
     required this.name,
     required this.phone,
     required this.email,
+    required this.nick,
   });
 
   Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'phone': phone,
-      'email': email,
-    };
+    return {'id': id, 'name': name, 'phone': phone, 'email': email, 'nick' : nick};
   }
 
   factory Contact.fromMap(Map<String, dynamic> map) {
@@ -26,6 +23,7 @@ class Contact {
       name: map['name'],
       phone: map['phone'],
       email: map['email'],
+      nick: map['nick'],
     );
   }
 }

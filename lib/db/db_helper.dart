@@ -23,7 +23,8 @@ class DBHelper {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
             phone TEXT,
-            email TEXT
+            email TEXT,
+            nick TEXT
           )
         ''');
       },

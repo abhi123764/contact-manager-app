@@ -19,6 +19,7 @@ class _AddEditScreenState extends State<AddEditScreen> {
   final TextEditingController name = TextEditingController();
   final TextEditingController phone = TextEditingController();
   final TextEditingController email = TextEditingController();
+  final TextEditingController nick = TextEditingController();
 
   @override
   void initState() {
@@ -28,6 +29,7 @@ class _AddEditScreenState extends State<AddEditScreen> {
       name.text = widget.contact!.name;
       phone.text = widget.contact!.phone;
       email.text = widget.contact!.email;
+      nick.text = widget.contact!.nick;
     }
   }
 
@@ -36,6 +38,7 @@ class _AddEditScreenState extends State<AddEditScreen> {
     name.dispose();
     phone.dispose();
     email.dispose();
+    nick.dispose();
     super.dispose();
   }
 
@@ -81,6 +84,15 @@ class _AddEditScreenState extends State<AddEditScreen> {
               ),
 
               const SizedBox(height: 15),
+              TextField(
+                controller: nick,
+                decoration: InputDecoration(
+                  labelText: 'Nick Name',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
 
               TextFormField(
                 controller: phone,
@@ -146,6 +158,7 @@ class _AddEditScreenState extends State<AddEditScreen> {
                       name: name.text,
                       phone: phone.text,
                       email: email.text,
+                      nick: nick.text,
                     );
 
                     final messenger = ScaffoldMessenger.of(context);
