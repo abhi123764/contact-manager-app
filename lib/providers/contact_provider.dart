@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import '../db/db_helper.dart';
 import '../models/contact.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ContactProvider extends ChangeNotifier {
   List<Contact> contacts = [];
   DBHelper db = DBHelper();
 
-  bool _isFirstLoad = true;
-
   Future<void> loadContacts() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    bool isFirstLoad = prefs.getBool('isFirstLoad') ?? true;
+
     contacts = await db.getContacts();
 
-    if (_isFirstLoad && contacts.isEmpty) {
+    if (isFirstLoad && contacts.isEmpty) {
       await addDefaultContacts();
       contacts = await db.getContacts();
-      _isFirstLoad = false; 
+
+      await prefs.setBool('isFirstLoad', false);
     }
 
     notifyListeners();
