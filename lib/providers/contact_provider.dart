@@ -68,3 +68,4 @@ class ContactProvider extends ChangeNotifier {
     await loadContacts();
   }
 }
+

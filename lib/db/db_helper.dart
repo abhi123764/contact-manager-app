@@ -28,6 +28,11 @@ class DBHelper {
           )
         ''');
       },
+      onUpgrade: (db, oldVersion, newVersion) {
+        if (oldVersion < 2) {
+          db.execute('ALTER TABLE contact ADD COLUMN email TEXT');
+        }
+      },
     );
   }
 
